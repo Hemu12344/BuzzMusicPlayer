@@ -1,0 +1,44 @@
+/* Add a pulsing animation when the song is playing */
+.playing-animation {
+    animation: pulse 1.5s infinite;
+}
+
+/* Define the pulse effect */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Optional: For button pulsing */
+.pulse {
+    animation: buttonPulse 1.5s infinite;
+}
+
+@keyframes buttonPulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Highlight active song in playlist */
+.card.active {
+    background-color: #1db954;
+    color: white;
+    transition: 0.3s;
+}
