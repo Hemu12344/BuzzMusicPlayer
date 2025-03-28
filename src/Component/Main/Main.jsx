@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { musicData } from "../../Context/musicData";
 
 export function Main() {
-    const { curImg, curArt, Arjit, songs, setCur, setTit, setImg, setCurArt, curTit, followers, setFollow } = useContext(musicData);
+    const { musicD, curImg, curArt, Arjit, songs, setCur, setTit, setImg, setCurArt, curTit, followers, setFollow } = useContext(musicData);
 
     useEffect(() => {
         const storedFollowers = localStorage.getItem("followers");
@@ -19,7 +19,7 @@ export function Main() {
 
     const handleSongClick = (song) => {
         if (song) {
-            setCur(song.audio || "");
+            setCur(song.videoId || song.audio || ""); // Play using videoId or audio if available
             setTit(song.title || "");
             setImg(song.cover || "");
             setCurArt(song.artist || "");
@@ -42,25 +42,30 @@ export function Main() {
                     <img src={curImg} className="rounded-md lg:w-full lg:h-full" alt={`Cover of ${curTit}`} loading="lazy" />
                 </div>
                 <div className="flex flex-col">
-                    {/* <h1 className="lg:text-sm text-[10px] font-semibold">{curTit}</h1> */}
                     <p className="lg:text-xs text-[20px] text-gray-400">Artist :- {curArt}</p>
                 </div>
             </div>
-            <p className="text-white lg:text-left text-center">
-            </p>
-            {/* <div className="flex gap-5 text-white lg:justify-left justify-center">
-                <button onClick={removeFollow} className="hover:cursor-pointer transition border-2 border-cyan-500 hover:bg-cyan-500 px-4 py-2 rounded-xl">
-                    Unfollow
-                </button>
-                <button
-                    className="hover:cursor-pointer transition border-2 border-cyan-500 hover:bg-cyan-500 px-4 py-2 rounded-xl"
-                    onClick={followIncr}
-                >
-                    Follow
-                </button>
-            </div> */}
             <div className="flex flex-col w-full mt-5">
-                {/* <span className="font-bold text-center">Page followers: {followers !== null ? followers : 0}</span> */}
+                <h1 className="text-xl font-semibold lg:text-left text-left mb-2">Search Songs</h1>
+                <div className="flex gap-5 overflow-x-auto p-2 w-full max-w-screen-md lg:max-w-screen mx-auto overflow-hidden scrollbar-hide">
+                    {musicD && musicD.length > 0 ? (
+                        musicD.map((song, index) => (
+                            <div
+                                key={index}
+                                className="w-40 min-w-[160px] flex-shrink-0 hover:cursor-pointer"
+                                onClick={() => handleSongClick(song)} // Handle search song click
+                            >
+                                <img src={song.thumbnail || ""} alt="Song Cover" className="rounded-lg w-full" />
+                                <h1 className="text-center mt-2">{song.title || "Unknown Title"}</h1>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="text-center">Search Something</p>
+                    )}
+                </div>
+            </div>
+
+            <div className="flex flex-col w-full mt-5">
                 <h1 className="text-xl font-semibold lg:text-left text-left mb-2">Popular Songs</h1>
                 <div className="flex gap-5 overflow-x-auto p-2 w-full max-w-screen-md lg:max-w-screen mx-auto overflow-hidden scrollbar-hide">
                     {songs && songs.length > 0 ? (
@@ -68,7 +73,7 @@ export function Main() {
                             <div
                                 key={index}
                                 className="w-40 min-w-[160px] flex-shrink-0 hover:cursor-pointer"
-                                onClick={() => handleSongClick(song)}
+                                onClick={() => handleSongClick(song)} // Handle popular song click
                             >
                                 <img src={song.cover || ""} alt="Song Cover" className="rounded-lg w-full" />
                                 <h1 className="text-center mt-2">{song.title || "Unknown Title"}</h1>
@@ -79,7 +84,7 @@ export function Main() {
                     )}
                 </div>
             </div>
-            <div className="flex flex-col w-full mt-5">
+            <div className="flex flex-col w-full mt-5 mb-25">
                 <h1 className="text-xl font-semibold lg:text-left text-left mb-2">Arjit Special</h1>
                 <div className="flex gap-5 overflow-x-auto p-2 w-full max-w-screen-md lg:max-w-screen mx-auto overflow-hidden scrollbar-hide">
                     {Arjit && Arjit.length > 0 ? (
@@ -87,7 +92,7 @@ export function Main() {
                             <div
                                 key={index}
                                 className="w-40 min-w-[160px] flex-shrink-0 hover:cursor-pointer"
-                                onClick={() => handleSongClick(song)}
+                                onClick={() => handleSongClick(song)} // Handle Arjit special song click
                             >
                                 <img src={song.cover || ""} alt="Song Cover" className="rounded-lg w-full" />
                                 <h1 className="text-center mt-2">{song.title || "Unknown Title"}</h1>

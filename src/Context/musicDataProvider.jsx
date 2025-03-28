@@ -3,6 +3,8 @@ import { Arjit } from "./Arjit";
 import { songs } from "./songs";
 import { useState ,useEffect} from "react";
 export const MusicDataProvider = ({ children }) => {
+    const [musicD,setMusicD]=useState([])
+    const [search,setSer]=useState("")
     const savedSongs = JSON.parse(localStorage.getItem("songs")) || [];
     const savedCurrentSong = JSON.parse(localStorage.getItem("currentSong")) || null;
     const [song, setSong] = useState(savedSongs);
@@ -33,7 +35,7 @@ export const MusicDataProvider = ({ children }) => {
     const [curTit,setTit]=useState(songs[0].title)
     const [curArt,setArt]=useState(songs[0].artist)
     return (
-        <musicData.Provider value={{ deletSong,songs,curMusic,setCur,curImg,setImg,curTit,setTit,setArt,curArt,followers,setFollow ,Arjit,song, addSong, currentSong, setCurrentSong}}>
+        <musicData.Provider value={{ musicD,setMusicD,songs,curMusic,setCur,curImg,setImg,curTit,setTit,setArt,curArt,followers,setFollow ,Arjit,song, addSong, currentSong, setCurrentSong,search,setSer}}>
             {children}
         </musicData.Provider>
     );
