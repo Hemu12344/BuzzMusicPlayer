@@ -4,12 +4,11 @@ import { MainNav } from "../MainNav/MainNav";
 import "./Header.css";
 
 export function Header() {
-    const { musicD, Arjit, songs, curMusic, setCur, curArt, curImg, curTit, setTit, setImg, setArt } = useContext(musicData);
-    const [isPlaying, setIsPlaying] = useState(false);
+    const {isPlaying, setIsPlaying, play,setPlay,musicD, Arjit, songs, curMusic, setCur, curArt, curImg, curTit, setTit, setImg, setArt } = useContext(musicData);
+    // const [] = useState(false);
     const [currentSongIndex, setCurrentSongIndex] = useState(0);
     const [progress, setProgress] = useState(0);
     const audioRef = useRef(null);
-
     useEffect(() => {
         if (audioRef.current && curMusic) {
             // If the current music is a URL for YouTube
@@ -96,7 +95,7 @@ export function Header() {
 
     return (
         <>
-            <div className="lg:flex absolute bg-black text-white bottom-0 fixed p-3 z-[1000] w-full lg:w-full lg:items-center">
+            <div className={`${play} lg:${play} absolute bg-black text-white bottom-0 fixed p-3 z-[1000] w-full lg:w-full lg:items-center`}>
                 <div className="lg:flex lg:gap-5 lg:justify-center items-center lg:w-full">
                     {/* Music controls */}
                     <div className="lg:flex flex justify-center items-center lg:gap-2 bg-transparent w-full lg:w-80">
