@@ -37,7 +37,7 @@ export const MusicDataProvider = ({ children }) => {
     const [videoRef,setRef]=useState("")
     const [play,setPlay]=useState("")
     return (
-        <musicData.Provider value={{isPlaying, setIsPlaying,play,setPlay,setRef, videoRef, musicD,setMusicD,songs,curMusic,setCur,curImg,setImg,curTit,setTit,setArt,curArt,followers,setFollow ,Arjit,song, addSong, currentSong, setCurrentSong,search,setSer}}>
+        <musicData.Provider value={{deletSong,isPlaying, setIsPlaying,play,setPlay,setRef, videoRef, musicD,setMusicD,songs,curMusic,setCur,curImg,setImg,curTit,setTit,setArt,curArt,followers,setFollow ,Arjit,song, addSong, currentSong, setCurrentSong,search,setSer}}>
             {children}
         </musicData.Provider>
     );

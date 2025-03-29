@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { musicData } from "../../Context/musicData";
 
 export function Main() {
-    const { isPlaying, setIsPlaying, setPlay, setRef, musicD, curImg, curArt, Arjit, songs, setCur, setTit, setImg, setCurArt, curTit, followers, setFollow } = useContext(musicData);
+    const {setArt, isPlaying, setIsPlaying, setPlay, setRef, musicD, curImg, curArt, Arjit, songs, setCur, setTit, setImg, setCurArt, curTit, followers, setFollow } = useContext(musicData);
     const [nowId, setId] = useState(""); 
     const video = useRef(null);
     
@@ -29,6 +29,7 @@ export function Main() {
             setTit(song.title || "");
             setImg(song.thumbnail || song.cover);
             setId(song.videoId);
+            setArt(song?.author || song?.artist)
             setIsPlaying(false);
             setPlay("hidden");
         }
@@ -54,7 +55,19 @@ export function Main() {
                     <p className="lg:text-xs text-[20px] text-gray-400">Artist :- {curArt}</p>
                 </div>
             </div>
-
+            <div className="flex flex-col w-full mt-5 mb-25">
+                <h1 className="text-xl font-semibold lg:text-left text-left mb-2">Search Player</h1>
+                <iframe
+                    className={nowId ? `block ${setIsPlaying(false)}` : "hidden"}
+                    width="100%"
+                    height="315"
+                    src={`https://www.youtube.com/embed/${nowId}?autoplay=1`}
+                    title="YouTube video player"
+                    allow="autoplay; encrypted-media"
+                    allowFullScreen
+                    ref={video}
+                ></iframe>
+            </div>
             <div className="flex flex-col w-full mt-5">
                 <h1 className="text-xl font-semibold lg:text-left text-left mb-2">Search Songs</h1>
                 <div className="flex gap-5 overflow-x-auto p-2 w-full max-w-screen-md lg:max-w-screen mx-auto overflow-hidden scrollbar-hide">
@@ -112,20 +125,6 @@ export function Main() {
                         <p className="text-center">No songs available</p>
                     )}
                 </div>
-            </div>
-
-            <div className="flex flex-col w-full mt-5 mb-25">
-                <h1 className="text-xl font-semibold lg:text-left text-left mb-2">Search Player</h1>
-                <iframe
-                    className={nowId ? `block ${setIsPlaying(false)}` : "hidden"}
-                    width="100%"
-                    height="315"
-                    src={`https://www.youtube.com/embed/${nowId}?autoplay=1`}
-                    title="YouTube video player"
-                    allow="autoplay; encrypted-media"
-                    allowFullScreen
-                    ref={video}
-                ></iframe>
             </div>
 
             <style>
