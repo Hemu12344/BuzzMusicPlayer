@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { musicData } from "../../Context/musicData";
 
 export function MainNav() {
-    const { setMusicD, setSer, search } = useContext(musicData);
+    const { setPlaylist, setMusicD, setSer, search, logData, setStatus,logStatus} = useContext(musicData);
 
     useEffect(() => {
         if (!search) return;
@@ -21,7 +21,7 @@ export function MainNav() {
             try {
                 const response = await fetch(url, options);
                 const result = await response.json();
-                setMusicD(result.result); // Set search results
+                setMusicD(result.result);
             } catch (error) {
                 console.error(error);
             }
@@ -29,6 +29,28 @@ export function MainNav() {
         getData();
     }, [search, setMusicD]);
 
+    useEffect(() => {
+        const getPlayist = async () => {
+            const url = 'https://youtube-music-api3.p.rapidapi.com/getPlaylist?id=VLRDCLAK5uy_kaYR5k7pkTcxU8A6Tgz0Z4ikrAF2uTIiU';
+            const options = {
+                method: 'GET',
+                headers: {
+                    'x-rapidapi-key': 'd99a831cc3msh98f064e3396e397p1d8bbajsndb58fa75088e',
+                    'x-rapidapi-host': 'youtube-music-api3.p.rapidapi.com'
+                }
+            };
+
+            try {
+                const response = await fetch(url, options);
+                const result = await response.json();
+                console.log(result.results)
+                setPlaylist(result.results)
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        getPlayist()
+    }, [])
     const handleSearch = (e) => {
         setSer(e.target.value); // Update search term
     };
@@ -37,8 +59,8 @@ export function MainNav() {
         <>
             <div className="overflow-x-hidden flex flex-col md:w-screen lg:w-screen">
                 <div className="flex p-3 lg:p-3 gap-5 lg:justify-between lg:gap-2">
-                    <div className="flex flex-row lg-w-auto text-white text-sm lg:text-lg md:p-1">
-                        <ul className="flex lg:gap-10 lg:p-auto pt-1 gap-3 md:gap-5">
+                    <div className=" flex flex-row lg-w-auto text-white text-sm lg:text-lg md:p-1">
+                        <ul className="flex  lg:gap-10 lg:p-auto pt-1 gap-3 md:gap-5">
                             <li>
                                 <NavLink
                                     to={"/"}
@@ -53,13 +75,13 @@ export function MainNav() {
                                     My Library
                                 </NavLink>
                             </li>
-                            <li>
+                            {/* <li>
                                 <NavLink
                                     to="/"
                                     className={({ isActive }) => `${isActive ? 'text-white' : 'text-gray-500'}`}>
                                     Radio
                                 </NavLink>
-                            </li>
+                            </li> */}
                         </ul>
                     </div>
 
@@ -76,16 +98,33 @@ export function MainNav() {
                             />
                         </div>
                     </div>
-
                     {/* User Section */}
-                    <div className="lg:flex hidden w-10 lg:min-w-100 flex">
-                        <div className="bg-white/60 backdrop-blur-md text-red-500 rounded-full w-8 h-8 text-center p-1">
-                            H
+                    <div className="lg:flex  w-10 lg:min-w-100 flex">
+                        <NavLink
+                            onClick={(() => { setStatus(false) })}
+                            to="/"
+                            className="hover:cursor-pointer text-gray-800 bg-red-500 text-white hover:bg-gray-500 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 focus:outline-none"
+                        >
+                            LogOut
+                        </NavLink>
+                        <div className=" backdrop-blur-md text-red-500  text-center p-1.5">
+                            <NavLink
+                                to="/profilePage"
+                                className="text-white   bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:ring-orange-300 font-medium rounded-full text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 focus:outline-none"
+                            >
+                                {logData[0].name[0]}
+                            </NavLink>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <Outlet />
+                    {
+                        logStatus?(
+                            <Outlet/>
+                        ):(
+                        <>
+                        </>)
+                    }
                 </div>
             </div>
         </>

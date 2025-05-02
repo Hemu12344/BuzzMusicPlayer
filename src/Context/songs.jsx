@@ -8,7 +8,7 @@ import Apna from "./Apna.mp3"
 export const songs = [
         {
             title: "Spreso Bhai ki choise",
-            artist: "Hemu",
+            artist: "spreso",
             audio:spreso,
             cover:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSETye8F2R_fdBtZxToJzEyL3yPY2rKKMxxWQ&s",
         },

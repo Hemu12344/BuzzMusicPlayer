@@ -1,14 +1,21 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { musicData } from "../../Context/musicData";
-
+import SubscriptionModal from "../SubscriptionModal";
 export function Main() {
-    const {setArt, isPlaying, setIsPlaying, setPlay, setRef, musicD, curImg, curArt, Arjit, songs, setCur, setTit, setImg, setCurArt, curTit, followers, setFollow } = useContext(musicData);
-    const [nowId, setId] = useState(""); 
+    const {
+        playlist, setArt, isPlaying, setIsPlaying, setPlay, setRef, musicD,
+        curImg, curArt, Arjit, songs, setCur, setTit, setImg, setCurArt,
+        curTit, followers, setFollow, isSubscribed, setIsSubscribed
+    } = useContext(musicData);
+
+    const [nowId, setId] = useState("");
     const video = useRef(null);
-    
+    const [libraryTimerExpired, setLibraryTimerExpired] = useState(false);
+    const [showSubscriptionPrompt, setShowSubscriptionPrompt] = useState(false);
+
     useEffect(() => {
         setRef(video);
-    }, [setRef, video]);
+    }, [setRef]);
 
     useEffect(() => {
         const storedFollowers = localStorage.getItem("followers");
@@ -23,13 +30,30 @@ export function Main() {
         }
     }, [followers]);
 
+    useEffect(() => {
+        if (!isSubscribed) {
+            const timer = setTimeout(() => {
+                setLibraryTimerExpired(true);
+                setShowSubscriptionPrompt(true);
+                setIsPlaying(false)
+            }, 60000); // 60 seconds
+            return () => clearTimeout(timer);
+        }
+    }, [isSubscribed]);
+
+    useEffect(() => {
+        if (nowId && video.current) {
+            video.current.src = `https://www.youtube.com/embed/${nowId}?autoplay=1`;
+        }
+    }, [nowId]);
+
     const handleSongClick = (song) => {
         if (song) {
             setCur(song.audio || "");
             setTit(song.title || "");
             setImg(song.thumbnail || song.cover);
             setId(song.videoId);
-            setArt(song?.author || song?.artist)
+            setArt(song?.author || song?.artist);
             setIsPlaying(false);
             setPlay("hidden");
         }
@@ -37,12 +61,6 @@ export function Main() {
 
     const followIncr = () => setFollow((prev) => (prev !== null ? prev + 1 : 1));
     const removeFollow = () => setFollow((prev) => (prev !== null ? Math.max(prev - 1, 0) : 0));
-
-    useEffect(() => {
-        if (nowId && video.current) {
-            video.current.src = `https://www.youtube.com/embed/${nowId}?autoplay=1`;
-        }
-    }, [nowId]);
 
     return (
         <div className="flex flex-col p-3 gap-2 text-white lg:h-auto min-h-screen">
@@ -55,19 +73,21 @@ export function Main() {
                     <p className="lg:text-xs text-[20px] text-gray-400">Artist :- {curArt}</p>
                 </div>
             </div>
+
             <div className="flex flex-col w-full mt-5 mb-25">
                 <h1 className="text-xl font-semibold lg:text-left text-left mb-2">Search Player</h1>
                 <iframe
-                    className={nowId ? `block ${setIsPlaying(false)}` : "hidden"}
+                    className={nowId ? "block" : "hidden"}
                     width="100%"
                     height="315"
-                    src={`https://www.youtube.com/embed/${nowId}?autoplay=1`}
+                    src={`https://www.youtube.com/embed/${nowId}?autoplay=1&controls=0`}
                     title="YouTube video player"
                     allow="autoplay; encrypted-media"
                     allowFullScreen
                     ref={video}
                 ></iframe>
             </div>
+
             <div className="flex flex-col w-full mt-5">
                 <h1 className="text-xl font-semibold lg:text-left text-left mb-2">Search Songs</h1>
                 <div className="flex gap-5 overflow-x-auto p-2 w-full max-w-screen-md lg:max-w-screen mx-auto overflow-hidden scrollbar-hide">
@@ -86,16 +106,47 @@ export function Main() {
             </div>
 
             <div className="flex flex-col w-full mt-5">
+                <h1 className="text-xl font-semibold lg:text-left text-left mb-2">My Library</h1>
+                <div className="flex gap-5 overflow-x-auto p-2 w-full max-w-screen-md lg:max-w-screen mx-auto overflow-hidden scrollbar-hide">
+                    {!isSubscribed && libraryTimerExpired ? (
+                        <div className="text-center text-red-500 font-semibold">
+                            Access to My Library has expired.
+                            <button
+                                onClick={() => setShowSubscriptionPrompt(true)}
+                                className="block mt-2 bg-blue-600 px-4 py-1 text-white rounded-xl"
+                            >
+                                Subscribe Now
+                            </button>
+                        </div>
+                    ) : playlist && playlist.length > 0 ? (
+                        playlist.map((song, index) => (
+                            <div key={index} className="w-40 min-w-[160px] flex-shrink-0 hover:cursor-pointer"
+                                onClick={() => {
+                                    handleSongClick(song);
+                                    setPlay("hidden");
+                                    setIsPlaying(true);
+                                }}>
+                                <img src={song.thumbnail || ""} alt="Song Cover" className="rounded-lg w-full" />
+                                <h1 className="text-center mt-2">{song.title || "Unknown Title"}</h1>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="text-center">No songs available</p>
+                    )}
+                </div>
+            </div>
+
+            <div className="flex flex-col w-full mt-5">
                 <h1 className="text-xl font-semibold lg:text-left text-left mb-2">Popular Songs</h1>
                 <div className="flex gap-5 overflow-x-auto p-2 w-full max-w-screen-md lg:max-w-screen mx-auto overflow-hidden scrollbar-hide">
                     {songs && songs.length > 0 ? (
                         songs.map((song, index) => (
                             <div key={index} className="w-40 min-w-[160px] flex-shrink-0 hover:cursor-pointer"
-                            onClick={(()=>{
-                                handleSongClick(song),
-                                setPlay("flex"),
-                                setIsPlaying(true)
-                            })}>
+                                onClick={() => {
+                                    handleSongClick(song);
+                                    setPlay("flex");
+                                    setIsPlaying(true);
+                                }}>
                                 <img src={song.cover || ""} alt="Song Cover" className="rounded-lg w-full" />
                                 <h1 className="text-center mt-2">{song.title || "Unknown Title"}</h1>
                             </div>
@@ -112,11 +163,11 @@ export function Main() {
                     {Arjit && Arjit.length > 0 ? (
                         Arjit.map((song, index) => (
                             <div key={index} className="w-40 min-w-[160px] flex-shrink-0 hover:cursor-pointer"
-                                onClick={(()=>{
-                                    handleSongClick(song),
-                                    setPlay("flex"),
-                                    setIsPlaying(true)
-                                })}>
+                                onClick={() => {
+                                    handleSongClick(song);
+                                    setPlay("flex");
+                                    setIsPlaying(true);
+                                }}>
                                 <img src={song.cover || ""} alt="Song Cover" className="rounded-lg w-full" />
                                 <h1 className="text-center mt-2">{song.title || "Unknown Title"}</h1>
                             </div>
@@ -126,6 +177,17 @@ export function Main() {
                     )}
                 </div>
             </div>
+
+            {showSubscriptionPrompt && (
+                <SubscriptionModal
+                    onSubscribe={() => {
+                        setIsSubscribed(true);
+                        setShowSubscriptionPrompt(false);
+                        setLibraryTimerExpired(false);
+                    }}
+                    onCancel={() => setShowSubscriptionPrompt(false)}
+                />
+            )}
 
             <style>
                 {`::-webkit-scrollbar { display: none; }

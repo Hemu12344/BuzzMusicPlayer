@@ -27,12 +27,12 @@ export const MusicUploader = () => {
                 onChange={handleFileChange} 
                 className="border-2 border-dashed border-gray-400 p-3 rounded-lg cursor-pointer hover:bg-gray-100"
             />
-            <button 
+            {/* <button 
                 onClick={handleAddDetails} 
                 className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             >
                 Add Song Details
-            </button>
+            </button> */}
         </div>
     );
 };
